@@ -1,0 +1,1 @@
+{"version":3,"sources":["MainPage.css"],"names":[],"mappings":"AAAA,WACE,YAAa,CACb,qBAAsB,CACtB,UAAW,CACX,WACF","file":"6.19c24b42.chunk.css","sourcesContent":[".main-page {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  height: 100%;\n}"]}

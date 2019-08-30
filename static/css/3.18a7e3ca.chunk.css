@@ -1,0 +1,2 @@
+.announce-grid{display:grid;width:100vw;grid-template-columns:1fr 1fr 1fr 1fr;grid-gap:25px;gap:25px;padding:15px;box-sizing:border-box;min-height:100vh}@media(max-width:1024px){.announce-grid{grid-template-columns:1fr 1fr 1fr}}@media(max-width:768px){.announce-grid{grid-template-columns:1fr 1fr}}@media(max-width:640px){.announce-grid{grid-template-columns:1fr}}
+/*# sourceMappingURL=3.18a7e3ca.chunk.css.map */
