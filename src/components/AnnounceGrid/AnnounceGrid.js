@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import AnnouncePreview from '../AnnouncePreview/AnnouncePreview';
-import './AnnounceGrid.css';
+import('./AnnounceGrid.css');
 
 const announceGrid = props => (
   <div className="announce-grid">
