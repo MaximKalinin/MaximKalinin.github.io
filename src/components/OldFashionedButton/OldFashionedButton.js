@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import fp from 'lodash/fp';
 import { Link } from 'react-router-dom';
 
+import { useSize } from '../useSize';
+
 const OldFashionedButtonEl = styled.button`
 border: 7px ridge;
 overflow: hidden;
@@ -19,20 +21,6 @@ cursor: pointer;
   padding: 0px;
 }
 `;
-
-const useSize = (deps) => {
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  const ref = useRef({});
-  useEffect(() => {
-    if (ref.current) {
-      setSize({
-        width: ref.current.offsetWidth,
-        height: ref.current.offsetHeight
-      });
-    }
-  }, deps);
-  return [size, ref];
-}
 
 const addLetter = (fromText, to, charAt) => [
   to,
@@ -57,7 +45,7 @@ export const OldFashionedButton = (props) => {
         index: displayedText.index + 1
       });
     };
-    const interval = setTimeout(update, 200);
+    const interval = setTimeout(update, 100);
     return () => clearTimeout(interval);
   }, [displayedText]);
   return (
