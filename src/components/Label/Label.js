@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import fp from 'lodash/fp';
 
 const LabelEl = styled.div`
 	display: flex;
@@ -34,8 +35,8 @@ const LabelEl = styled.div`
   & > div.img {
     position: relative;
     text-align: center;
-    width: 70%;
-    height: 60%;
+    max-width: 70%;
+    max-height: 60%;
   }
   & > span {
     font-family: VT323, sans-serif;
@@ -46,11 +47,19 @@ const LabelEl = styled.div`
 `;
 
 export const Label = (props) => {
-	const { src, name, x, y, selected, onClick, onDrag } = props;
+	const { src, name, x, y, onClick, onDragEnd, id, selection } = props;
 	return (
-		<LabelEl x={x} y={y} className={selected ? 'selected' : ''} onClick={onClick} onDragEnd={onDrag}>
+		<LabelEl
+			x={x}
+			y={y}
+			className={id === selection ? 'selected' : ''}
+			onClick={onClick}
+			onDragEnd={ onDragEnd }
+			id={ id }
+			draggable
+		>
 			<div className={'img'}>
-				<img src={src} alt={name} />
+				<img src={src} alt={name} draggable={ false  } />
 			</div>
 			<span>{name}</span>
 		</LabelEl>

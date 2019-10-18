@@ -27,6 +27,7 @@ const MenuButton = styled.button`
   width: 100px;
   border: 3px outset #bfbfbf;
   cursor: pointer;
+  user-select: none;
 `;
 
 const TimeTrackerEl = styled.div`

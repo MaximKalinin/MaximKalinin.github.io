@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import fp from 'lodash/fp';
 
 import { TASK_PANEL_HEIGHT, GRID_SIZE } from "../../consts";
-import {Label} from "../Label/Label";
+import { Label } from "../Label/Label";
 
 const DesktopEl = styled.div`
 	height: calc(100vh - ${TASK_PANEL_HEIGHT}px);
@@ -17,45 +17,41 @@ const initLabels = [{
 	src: 'https://soft2u.ru/wp-content/uploads/far_icon_soft2u.ru_.jpg',
 	x: 0,
 	y: 0,
-	selected: false,
 	id: fp.uniqueId()
 }];
 
-const mapLabels = label => <Label {...label} key={label.id} />;
+const mapLabels = selection => label => <Label {...label} key={label.id} selection={selection} />;
 
 export const Desktop = () => {
-	const onLabelClick = (e, id) => fp.flow([
-		fp.tap(() => e.stopPropagation()),
-		fp.map(label => ({ ...label, selected: label.id === id })),
-		setLabels
-	])(
-		labels
-	);
-	const onLabelDrag = (e, id) => fp.flow([
+	const [selection, setSelection] = useState(0);
+	const mapLabelsWithSelection = fp.flow([mapLabels, fp.map])(selection);
+	const onLabelClick = fp.flow([
+		fp.tap(fp.invoke('stopPropagation')),
+		fp.property('currentTarget.id'),
+		setSelection
+	]);
+	const onLabelDragEnd = (e) => fp.flow([
 		fp.map(label => ({
 			...label,
-			x: label.id === id ? fp.round(e.clientX / GRID_SIZE) : label.x,
-			y: label.id === id ? fp.round(e.clientY / GRID_SIZE) : label.y
+			x: label.id === e.target.id ? fp.floor(e.clientX / GRID_SIZE) : label.x,
+			y: label.id === e.target.id ? fp.floor(e.clientY / GRID_SIZE) : label.y
 		})),
-		setLabels
+		setLabels,
 	])(labels);
-	const addOnClick = label => ({...label, onClick: (e) => onLabelClick(e, label.id)});
-	const addOnDrag = label => ({...label, onDrag: (e) => onLabelDrag(e, label.id)});
 	const [labels, setLabels] =
 		fp.flow([
 			fp.map(fp.flow([
-				addOnClick,
-				addOnDrag
+				fp.assign({
+					onClick: onLabelClick,
+					onDragEnd: onLabelDragEnd,
+				}),
 			])),
 			useState
 		])(initLabels);
-	// useState(fp.map(
-	// 	fp.flow([addOnClick, addOnDrag]),
-	// 	initLabels
-	// ));
+	const children = mapLabelsWithSelection(labels);
 	return (
-		<DesktopEl onClick={(e) => onLabelClick(e, 0)}>
-			{labels.map(mapLabels)}
+		<DesktopEl onClick={onLabelClick} id={"0"}>
+			{ children }
 		</DesktopEl>
 	);
 };
