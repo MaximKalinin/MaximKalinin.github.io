@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import fp from 'lodash/fp';
+import { ErrorOpenLink } from '../ErrorOpenLink/ErrorOpenLink';
 
 const LabelEl = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	grid-row-start: ${({y}) => y + 1};
-	grid-column-start: ${({x}) => x + 1};
-	grid-row-end: ${({y}) => y + 2};
-	grid-column-end: ${({x}) => x + 2};
+	grid-row-start: ${({ y }) => y + 1};
+	grid-column-start: ${({ x }) => x + 1};
+	grid-row-end: ${({ y }) => y + 2};
+	grid-column-end: ${({ x }) => x + 2};
 	cursor: pointer;
 	&.selected {
 		span {
@@ -47,21 +48,38 @@ const LabelEl = styled.div`
 `;
 
 export const Label = (props) => {
-	const { src, name, x, y, onClick, onDragEnd, id, selection } = props;
+	const { src, name, x, y, onClick, onDragEnd, id, selection, onDragStart, ProgramComponent, setSelection } = props;
+	console.log(selection, id);
+	const [programId] = useState(fp.uniqueId());
+	const [programOpened, setProgramOpened] = useState(false);
 	return (
-		<LabelEl
-			x={x}
-			y={y}
-			className={id === selection ? 'selected' : ''}
-			onClick={onClick}
-			onDragEnd={ onDragEnd }
-			id={ id }
-			draggable
-		>
-			<div className={'img'}>
-				<img src={src} alt={name} draggable={ false  } />
-			</div>
-			<span>{name}</span>
-		</LabelEl>
+		<React.Fragment>
+			<LabelEl
+				x={ x }
+				y={ y }
+				className={ id === selection ? 'selected' : '' }
+				onClick={ onClick }
+				onDragEnd={ onDragEnd }
+				onDragStart={ onDragStart }
+				id={ id }
+				draggable
+				onDoubleClick={ fp.flow([() => setProgramOpened(true), () => setSelection(programId)]) }
+			>
+				<div className={ 'img' }>
+					<img src={ src } alt={ name } draggable={ false } />
+				</div>
+				<span>{ name }</span>
+			</LabelEl>
+			<ProgramComponent
+				id={ programId }
+				close={ () => setProgramOpened(false) }
+				isOpen={ programOpened }
+				setSelection={ setSelection }
+			/>
+		</React.Fragment>
 	);
+};
+
+Label.defaultProps = {
+	ProgramComponent: ErrorOpenLink
 };

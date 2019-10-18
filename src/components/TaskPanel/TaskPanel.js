@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TASK_PANEL_HEIGHT } from "../../consts";
+import fp from 'lodash/fp';
 
+const MENU_ID = fp.uniqueId();
 
 const TaskPanelEl = styled.div`
-  position: fixed;
+  position: relative;
   bottom: 0;
   left: 0;
   right: 0;
@@ -28,6 +30,12 @@ const MenuButton = styled.button`
   border: 3px outset #bfbfbf;
   cursor: pointer;
   user-select: none;
+  &:active {
+    background: grey;
+  }
+  &:focus {
+    outline: none;
+  }
 `;
 
 const TimeTrackerEl = styled.div`
@@ -55,7 +63,8 @@ const MenuEl = styled.div`
   background: white;
   visibility: hidden;
   &.open {
-  visibility: visible;
+    visibility: visible;
+  }
 `;
 
 const TimeTracker = () => {
@@ -70,13 +79,13 @@ const TimeTracker = () => {
   );
 };
 
-export const TaskPanel = () => {
-  const [menu, setMenu] = useState(false);
+export const TaskPanel = props => {
+  const { selection, setSelection } = props;
   return (
     <TaskPanelEl>
-      <MenuButton onClick={() => setMenu(!menu)}>menu</MenuButton>
+      <MenuButton onClick={ () => setSelection(selection === MENU_ID ? 0 : MENU_ID) }>menu</MenuButton>
       <TimeTracker />
-      <MenuEl className={menu ? 'open' : ''}>this is menu</MenuEl>
+      <MenuEl className={ selection === MENU_ID ? 'open' : '' }>this is menu</MenuEl>
     </TaskPanelEl>
   );
 };

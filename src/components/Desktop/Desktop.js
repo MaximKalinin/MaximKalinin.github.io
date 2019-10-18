@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import fp from 'lodash/fp';
 
 import { TASK_PANEL_HEIGHT, GRID_SIZE } from "../../consts";
 import { Label } from "../Label/Label";
+import { setSelectionByEvent, getCoordinate } from '../../utils';
 
 const DesktopEl = styled.div`
 	height: calc(100vh - ${TASK_PANEL_HEIGHT}px);
@@ -20,21 +21,21 @@ const initLabels = [{
 	id: fp.uniqueId()
 }];
 
-const mapLabels = selection => label => <Label {...label} key={label.id} selection={selection} />;
+const mapLabels = selection => label => <Label { ...label } key={ label.id } selection={ selection } />;
 
-export const Desktop = () => {
-	const [selection, setSelection] = useState(0);
+export const Desktop = props => {
+	const { selection, setSelection } = props;
 	const mapLabelsWithSelection = fp.flow([mapLabels, fp.map])(selection);
 	const onLabelClick = fp.flow([
 		fp.tap(fp.invoke('stopPropagation')),
-		fp.property('currentTarget.id'),
-		setSelection
+		setSelectionByEvent(setSelection)
 	]);
+	const onLabelDragStart = setSelectionByEvent(setSelection);
 	const onLabelDragEnd = (e) => fp.flow([
 		fp.map(label => ({
 			...label,
-			x: label.id === e.target.id ? fp.floor(e.clientX / GRID_SIZE) : label.x,
-			y: label.id === e.target.id ? fp.floor(e.clientY / GRID_SIZE) : label.y
+			x: label.id === e.target.id ? getCoordinate(window.innerWidth)(e.clientX / GRID_SIZE) : label.x,
+			y: label.id === e.target.id ? getCoordinate(window.innerHeight)(e.clientY / GRID_SIZE) : label.y
 		})),
 		setLabels,
 	])(labels);
@@ -44,13 +45,15 @@ export const Desktop = () => {
 				fp.assign({
 					onClick: onLabelClick,
 					onDragEnd: onLabelDragEnd,
+					onDragStart: onLabelDragStart,
+					setSelection
 				}),
 			])),
 			useState
 		])(initLabels);
 	const children = mapLabelsWithSelection(labels);
 	return (
-		<DesktopEl onClick={onLabelClick} id={"0"}>
+		<DesktopEl onClick={ onLabelClick } id={ "0" }>
 			{ children }
 		</DesktopEl>
 	);
