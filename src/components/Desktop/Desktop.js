@@ -5,6 +5,7 @@ import fp from 'lodash/fp';
 import { TASK_PANEL_HEIGHT, GRID_SIZE } from "../../consts";
 import { Label } from "../Label/Label";
 import { setSelectionByEvent, getCoordinate } from '../../utils';
+import { useWindowSize } from '../useWindowSize';
 
 const DesktopEl = styled.div`
 	height: calc(100vh - ${TASK_PANEL_HEIGHT}px);
@@ -26,6 +27,7 @@ const mapLabels = selection => label => <Label { ...label } key={ label.id } sel
 export const Desktop = props => {
 	const { selection, setSelection } = props;
 	const mapLabelsWithSelection = fp.flow([mapLabels, fp.map])(selection);
+	const windowSize = useWindowSize();
 	const onLabelClick = fp.flow([
 		fp.tap(fp.invoke('stopPropagation')),
 		setSelectionByEvent(setSelection)
@@ -34,8 +36,8 @@ export const Desktop = props => {
 	const onLabelDragEnd = (e) => fp.flow([
 		fp.map(label => ({
 			...label,
-			x: label.id === e.target.id ? getCoordinate(window.innerWidth)(e.clientX / GRID_SIZE) : label.x,
-			y: label.id === e.target.id ? getCoordinate(window.innerHeight)(e.clientY / GRID_SIZE) : label.y
+			x: label.id === e.target.id ? getCoordinate(windowSize.width)(e.clientX / GRID_SIZE) : label.x,
+			y: label.id === e.target.id ? getCoordinate(windowSize.height)(e.clientY / GRID_SIZE) : label.y
 		})),
 		setLabels,
 	])(labels);

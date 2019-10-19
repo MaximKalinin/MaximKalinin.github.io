@@ -7,16 +7,20 @@ const HeaderWrapper = styled.div`
   background: lightgray;
   padding: 5px;
   user-select: none;
-  & > div {
+  & > button {
+    box-sizing: content-box;
     display: block;
     cursor: pointer;
     margin-left: 5px;
     height: 1.5rem;
-    width: 1.5rem;
+    /* width: 1.5rem; */
     font-size: 1.5rem;
     display: flex;
     justify-content: center;
     border: 5px groove;
+  }
+  & > button:focus {
+    outline: none;
   }
   .close {
     background: red;
@@ -42,9 +46,9 @@ export const HeaderBar = props => {
   const { buttons } = props;
   return (
     <HeaderWrapper>
-      { buttons.close && <div className="close" onClick={ buttons.close }>×</div> }
-      { buttons.fullScreen && <div className="full-screen" onClick={ buttons.fullScreen }>▣</div> }
-      { buttons.hide && <div className="hide" onClick={ buttons.hide }>-</div> }
+      { buttons.close && <button className="close" onClick={ buttons.close }>×</button> }
+      { buttons.fullScreen && <button className="full-screen" onClick={ buttons.fullScreen }>▣</button> }
+      { buttons.hide && <button className="hide" onClick={ buttons.hide }>-</button> }
     </HeaderWrapper>
   );
 }

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TASK_PANEL_HEIGHT } from "../../consts";
 import fp from 'lodash/fp';
+import { Calendar } from '../Calendar/Calendar';
 
 const MENU_ID = fp.uniqueId();
+const CALENDAR_ID = fp.uniqueId();
 
 const TaskPanelEl = styled.div`
   position: relative;
@@ -49,6 +51,7 @@ const TimeTrackerEl = styled.div`
   margin-bottom: 5px;
   padding-left: 10px;
   border-left: 1px solid grey;
+  position: relative;
 `;
 
 const getDayTime = () => `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`;
@@ -67,7 +70,8 @@ const MenuEl = styled.div`
   }
 `;
 
-const TimeTracker = () => {
+const TimeTracker = (props) => {
+  const { onClick } = props;
   const [time, setTime] = useState(getDayTime());
   useEffect(() => {
     const update = () => setTime(getDayTime());
@@ -75,7 +79,9 @@ const TimeTracker = () => {
     return () => clearTimeout(timeout);
   }, [time]);
   return (
-    <TimeTrackerEl>{ time }</TimeTrackerEl>
+    <TimeTrackerEl onClick={ onClick }>
+      { time }
+    </TimeTrackerEl>
   );
 };
 
@@ -84,7 +90,8 @@ export const TaskPanel = props => {
   return (
     <TaskPanelEl>
       <MenuButton onClick={ () => setSelection(selection === MENU_ID ? 0 : MENU_ID) }>menu</MenuButton>
-      <TimeTracker />
+      <TimeTracker onClick={ () => setSelection(selection === CALENDAR_ID ? 0 : CALENDAR_ID) } />
+      <Calendar locale="ru" className={ selection === CALENDAR_ID ? 'open' : '' } />
       <MenuEl className={ selection === MENU_ID ? 'open' : '' }>this is menu</MenuEl>
     </TaskPanelEl>
   );
