@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import fp from 'lodash/fp';
 import { HeaderBar } from '../HeaderBar/HeaderBar';
+import { Button } from '../Button/Button';
 
 const ERROR_ID = fp.uniqueId();
 
@@ -25,17 +26,6 @@ const ErrorContent = styled.div`
   font-family: VT323, sans-serif;
 `;
 
-const OkayButton = styled.div`
-  border: 5px groove lightgray;
-  padding: 5px 20px;
-  background: lightgray;
-  cursor: pointer;
-  font-family: VT323, sans-serif;
-  &:active {
-    background: grey;
-  }
-`;
-
 const Buttons = styled.div`
   display: flex;
   flex-direction: row-reverse;
@@ -52,7 +42,7 @@ export const ErrorOpenLink = props => {
         Couldn't execute file. The file is damaged or system has no corresponding program to open it. Ask your system administrator for help.
         <br />
         <Buttons>
-          <OkayButton onClick={ close }>OK</OkayButton>
+          <Button onClick={ close }>OK</Button>
         </Buttons>
       </ErrorContent>
     </ErrorEl>

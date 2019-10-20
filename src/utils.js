@@ -7,4 +7,7 @@ export const setSelectionByEvent = setSelection => fp.flow([
   setSelection
 ]);
 
-export const getCoordinate = (maxCoordinate: number) => fp.flow([fp.floor, fp.clamp(0, maxCoordinate / GRID_SIZE)]);
+export const getCoordinate = (maxCoordinate: number) => fp.flow([
+  fp.floor,
+  fp.clamp(0, maxCoordinate / GRID_SIZE),
+]);

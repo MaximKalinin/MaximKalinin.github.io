@@ -49,7 +49,6 @@ const LabelEl = styled.div`
 
 export const Label = (props) => {
 	const { src, name, x, y, onClick, onDragEnd, id, selection, onDragStart, ProgramComponent, setSelection } = props;
-	console.log(selection, id);
 	const [programId] = useState(fp.uniqueId());
 	const [programOpened, setProgramOpened] = useState(false);
 	return (

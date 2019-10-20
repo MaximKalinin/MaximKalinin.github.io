@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import fp from 'lodash/fp';
 import styled from 'styled-components';
+import { SmallButton } from '../Button/Button';
 
 const WEEK_DAYS = (locale: 'ru' | 'en') => (locale === 'ru' && [
   'пн',
@@ -58,10 +59,12 @@ const CalendarEl = styled.div`
   box-shadow: -4px -4px 5px rgba(0, 0, 0, 0.3);
   background: white;
   flex-direction: column;
-  font-size: 20px;
-  font-family: VT323,sans-serif;
   display: none;
   height: 300px;
+  & * {
+    font-size: 20px;
+    font-family: VT323,sans-serif;
+  }
   &.open {
     display: flex;
   }
@@ -75,9 +78,13 @@ const CalendarEl = styled.div`
       display: flex;
       justify-content: center;
     }
+    & > .today {
+      border: 1px solid red;
+    }
   }
   & > .controllers {
     background: lightgray;
+    font: inherit;
     & > .controller {
       padding: 5px 0;
       display: flex;
@@ -128,14 +135,14 @@ export const Calendar = (props) => {
     <CalendarEl className={ className }>
       <div className="controllers">
         <div className="controller">
-          <div className="button" onClick={ setPrevYear }>⟵</div>
+          <SmallButton onClick={ setPrevYear }>⟵</SmallButton>
           <div>{ date.getFullYear() }</div>
-          <div className="button" onClick={ setNextYear }>⟶</div>
+          <SmallButton onClick={ setNextYear }>⟶</SmallButton>
         </div>
         <div className="controller">
-          <div className="button" onClick={ setPrevMonth }>⟵</div>
+          <SmallButton onClick={ setPrevMonth }>⟵</SmallButton>
           <div>{ monthsWithLocale[date.getMonth()] }</div>
-          <div className="button" onClick={ setNextMonth }>⟶</div>
+          <SmallButton onClick={ setNextMonth }>⟶</SmallButton>
         </div>
       </div>
       <div className="week">
@@ -146,7 +153,7 @@ export const Calendar = (props) => {
       { month.map((week: Array<number>, index: number) => (
         <div className="week" key={ index }>
           { week.map((day: number, dayIndex: number) => (
-            <div className="day" key={ `day-${dayIndex}` }>{ day }</div>
+            <div className={ isToday(getNthDay(day)(date)) ? "day today" : 'day' } key={ `day-${dayIndex}` }>{ day }</div>
           )) }
         </div>
       )) }
@@ -166,6 +173,11 @@ const getNthDay: Date = (n: number) => fp.flow([
     fp.tap
   ])('setDate', [n])
 ]);
+
+const isToday = (date: Date) => {
+  const today = new Date();
+  return today.getDate() === date.getDate() && today.getMonth() === date.getMonth() && today.getFullYear() === date.getFullYear();
+}
 
 const getNextDay: Date = fp.flow([
   (date: Date) => [date.getDate() + 1, date],
@@ -188,11 +200,18 @@ const getNthYear: Date = (n: number) => fp.flow([
   ])('setYear', [n])
 ]);
 
-const getWeekDay = (locale: 'en' | 'ru', date: Date) => (locale === 'en' && date.getDay()) ||
-  (locale === 'ru' && date.getDay() > 0 ? date.getDay() - 1 : 6);
+const getWeekDay = (locale: 'en' | 'ru', date: Date) => {
+  if (locale === 'en') {
+    return date.getDay();
+  }
+  if (locale === 'ru') {
+    return date.getDay() > 0 ? date.getDay() - 1 : 6
+  }
+}
 
 const getMonth = (locale: 'ru' | 'en', date: Date) => {
   let day = getNthDay(1)(date);
+  console.log(day);
   const getWeekDayWithLocale = fp.partial(getWeekDay, [locale]);
   const withinMonth = () => day.getMonth() === date.getMonth();
   const month = [];
@@ -212,5 +231,4 @@ const getMonth = (locale: 'ru' | 'en', date: Date) => {
     month.push(week);
   }
   return month;
-}
-
+};

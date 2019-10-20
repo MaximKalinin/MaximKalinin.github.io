@@ -91,7 +91,7 @@ export const TaskPanel = props => {
     <TaskPanelEl>
       <MenuButton onClick={ () => setSelection(selection === MENU_ID ? 0 : MENU_ID) }>menu</MenuButton>
       <TimeTracker onClick={ () => setSelection(selection === CALENDAR_ID ? 0 : CALENDAR_ID) } />
-      <Calendar locale="ru" className={ selection === CALENDAR_ID ? 'open' : '' } />
+      <Calendar locale="en" className={ selection === CALENDAR_ID ? 'open' : '' } />
       <MenuEl className={ selection === MENU_ID ? 'open' : '' }>this is menu</MenuEl>
     </TaskPanelEl>
   );
