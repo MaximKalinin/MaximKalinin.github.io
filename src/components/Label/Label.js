@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import styled from 'styled-components';
 import fp from 'lodash/fp';
 import { ErrorOpenLink } from '../ErrorOpenLink/ErrorOpenLink';
+import { ILabel } from '../../model';
 
 const LabelEl = styled.div`
 	display: flex;
@@ -47,8 +48,25 @@ const LabelEl = styled.div`
   }
 `;
 
-export const Label = (props) => {
-	const { src, name, x, y, onClick, onDragEnd, id, selection, onDragStart, ProgramComponent, setSelection } = props;
+interface ILabelProps {
+	src: string;
+	name: string;
+	x: number;
+	y: number;
+	onClick: () => void;
+	onDragStart: (e: Event) => void;
+	onDragEnd: (e: Event) => void;
+	id: string;
+	selection: string;
+	setSelection: (selection: string) => void;
+	ProgramComponent: FC;
+	childProps: {
+		labels?: ILabel[];
+	}
+}
+
+export const Label = (props: ILabelProps) => {
+	const { src, name, x, y, onClick, onDragEnd, id, selection, onDragStart, ProgramComponent, setSelection, childProps } = props;
 	const [programId] = useState(fp.uniqueId());
 	const [programOpened, setProgramOpened] = useState(false);
 	return (
@@ -74,6 +92,8 @@ export const Label = (props) => {
 				close={ () => setProgramOpened(false) }
 				isOpen={ programOpened }
 				setSelection={ setSelection }
+				selection={ selection }
+				{ ...childProps }
 			/>
 		</React.Fragment>
 	);

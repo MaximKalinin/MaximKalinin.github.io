@@ -116,7 +116,6 @@ export const Calendar = (props) => {
   }, [date]);
   const setPrevMonth = () => fp.flow([
     getNthMonth(date.getMonth() - 1),
-    fp.tap(console.log),
     setDate
   ])(date);
   const setNextMonth = () => fp.flow([
@@ -153,7 +152,9 @@ export const Calendar = (props) => {
       { month.map((week: Array<number>, index: number) => (
         <div className="week" key={ index }>
           { week.map((day: number, dayIndex: number) => (
-            <div className={ isToday(getNthDay(day)(date)) ? "day today" : 'day' } key={ `day-${dayIndex}` }>{ day }</div>
+            <div className={ day && isToday(getNthDay(day)(date)) ? "day today" : 'day' } key={ `day-${dayIndex}` }>
+              { day }
+            </div>
           )) }
         </div>
       )) }
@@ -185,7 +186,7 @@ const getNextDay: Date = fp.flow([
 ]);
 
 const getNthMonth: Date = (n: number) => fp.flow([
-  copyDate,
+  getNthDay(1),
   fp.flow([
     fp.invokeArgs,
     fp.tap
@@ -211,7 +212,6 @@ const getWeekDay = (locale: 'en' | 'ru', date: Date) => {
 
 const getMonth = (locale: 'ru' | 'en', date: Date) => {
   let day = getNthDay(1)(date);
-  console.log(day);
   const getWeekDayWithLocale = fp.partial(getWeekDay, [locale]);
   const withinMonth = () => day.getMonth() === date.getMonth();
   const month = [];
